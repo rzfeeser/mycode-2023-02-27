@@ -1,0 +1,22 @@
+- name: PowerMax Dell Playbook v1
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  
+  collections:
+    - dellemc.powermax
+
+  tasks:
+  - name: Try running our new gather_facts module
+    #dellemc_powermax_gatherfacts:
+    info:
+      unispherehost: 10.126.70.19
+      universion: "90" 
+      verifycert: False
+      user: smc
+      password: smc
+    register: results
+
+  - name: what JSON was returned
+    debug:
+      var: results
