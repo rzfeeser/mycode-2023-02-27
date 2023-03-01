@@ -1,0 +1,67 @@
+---
+- name: Gather configuration data
+  hosts: localhost
+  connection: local
+
+  collections:
+    - dellemc.powermax
+
+  vars_files:
+    - vars/credsvault.yml
+    - vars/storagedetails.yml
+
+  tasks:
+
+  - name: Pre-tasks
+    block:
+
+    - name: Get a list of arrays (serial_no.)
+      include_tasks: pre-tasks.yml
+
+  - name: Changes / Work
+    block:
+    - name: Create a storage group
+      include_tasks: storage-workflow.yml
+
+    rescue:
+    - name: "Create masking view {{ storage.mv_name }}"
+      dellemc_powermax_maskingview:
+          unispherehost: "{{ dell.unispherehost }}"
+          universion: "{{ dell.universion }}"
+          verifycert: "{{ dell.verifycert }}"
+          user: "{{ dell.user }}"
+          password: "{{ dell.password }}"
+          serial_no: "{{ arrays.Arrays[0] }}" # maps to an array (avail if you run the module without it)
+          mv_name: "{{ storage.mv_name }}"
+          portgroup_name: "{{ storage.portgroup_name }}"
+          host_name: "{{ storage.host_name }}"
+          sg_name: "{{ storage.sg_name }}"
+          state: absent
+
+    - name: "Create port group {{ storage.portgroup_name }}"
+      dellemc.powermax.portgroup:
+      # dellemc_powermax_portgroup:
+          unispherehost: "{{ dell.unispherehost }}"
+          universion: "{{ dell.universion }}"
+          verifycert: "{{ dell.verifycert }}"
+          user: "{{ dell.user }}"
+          password: "{{ dell.password }}"
+          serial_no: "{{ arrays.Arrays[0] }}" # maps to an array (avail if you run the module without it)
+          portgroup_name: "{{ storage.portgroup_name }}"
+          state: absent
+          ports: "{{ storage.port_list }}"
+          port_state: "absent-in-group"
+
+    - name: "Create host {{ storage.host_name }}"
+      dellemc.powermax.host:
+      # dellemc_powermax_host:
+          unispherehost: "{{ dell.unispherehost }}"
+          universion: "{{ dell.universion }}"
+          verifycert: "{{ dell.verifycert }}"
+          user: "{{ dell.user }}"
+          password: "{{ dell.password }}"
+          serial_no: "{{ arrays.Arrays[0] }}" # maps to an array (avail if you run the module without it)
+          host_name: "{{ storage.host_name }}"
+          initiators: "{{ storage.initiators }}"
+          state: absent
+          initiator_state: "absent-in-host"

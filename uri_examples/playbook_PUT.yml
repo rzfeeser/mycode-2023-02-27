@@ -1,0 +1,20 @@
+---
+- name: Using Ansible to send an HTTP PUT
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Send HTTP PUT to requestbin.com
+      ansible.builtin.uri:
+        url: https://enn2dv55w8fer.x.pipedream.net
+        method: PUT  # typically used to UPDATE
+        headers:
+          Content-Type: application/json
+          Storage-auth-token: abcdefg717
+        body_format: json
+        # body is the attachment
+        body:
+          name: russell    # zach
+          policy: bronze
+          storage_type: flash

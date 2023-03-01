@@ -1,0 +1,62 @@
+- name: Learning to work with variable data                                               
+  hosts: localhost     # only use local host if you're connecting to a single storage device
+  connection: local    # when we connect to storage devices, we typically choose local
+  gather_facts: false  # when we connect to a storage device, we typically set this to false
+
+  # play variables
+  vars:
+    # this is a variable
+    volumes:
+      - vol001
+      - vol002
+      - vol003
+      - vol004
+      - vol005
+      
+    # this is a variable
+    locations:
+      # this variable is a child of locations
+      regions:
+        - northeast
+        - north
+        - northwest
+      # this variable is a child of locations
+      datacenters:
+        - Hershey Pennsylvania
+        - Rochester New York
+        - Seattle Washington
+
+  # tasks (python modules to execute)
+  tasks:
+    # 1st item in the volumes list
+    - name: print out the name vol001
+      debug:
+        var: volumes[0]
+
+    # display all datacenters
+    - name: print out ALL datacenters
+      debug:
+        var: locations.datacenters           # var is mutually exclusive with msg
+        #msg: "{{ locations.datacenters }}"  # use msg if you want to include other text
+
+    # second item in the regions list
+    - name: print out batman
+      debug:
+        msg: "{{ locations.regions[1] }}"
+
+    # use a loop to display all of the regions 
+    - name: print out all regions
+      debug:
+        var: item
+      loop: "{{ locations.regions }}"
+
+    # fourth item in the volumes list is actually the 3rd item as numbering begins at 0
+    - name: print out the fourth volume in the list
+      debug:
+        var: volumes[3]
+
+    - name: lists may be combined as they are the same type
+      debug:
+        var: item
+      loop: "{{ locations.regions + locations.datacenters }}"  # combine both lists into a single list
+

@@ -1,0 +1,17 @@
+---
+storage_work:
+  ipv4:
+     - name: "dellstorage"
+       credentials:
+         -  user: "smc"
+            password: "qwerty"
+            ip: 10.10.0.4
+         -  user: "smc"
+            password: "qwerty"
+            rule: "10.10.1.53"
+     - name: "purestorage"
+       credentials:
+         -  user: "admin"
+            password: "qwertyuiop"
+            rule: "172.16.32.11"
+

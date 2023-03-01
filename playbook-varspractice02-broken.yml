@@ -1,0 +1,15 @@
+- name: complex variable data                                               
+  hosts: localhost     # only use local host if you're connecting to a single storage device
+  connection: local    # when we connect to storage devices, we typically choose local
+  gather_facts: false  # when we connect to a storage device, we typically set this to false
+
+  # import this file filled with variables
+  vars_files:
+    - ~/mycode/vars/storagevars.yml
+
+  tasks:
+  - name: debug with_dict
+    debug:
+      var: "{{ item }}"
+    loop: "{{ storage_work }}"  # this will FAIL because prefixlist is a dictionary
+

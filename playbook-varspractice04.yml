@@ -1,0 +1,24 @@
+---
+- name: A playbook that manipulates data from uri
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    uritouse: "https://statsapi.web.nhl.com/api/v1/teams"
+
+  tasks:
+
+  # every storage device you work with has a restful API
+  # that API has documentation
+  - name: Use URI module to send HTTP GET
+    ansible.builtin.uri:
+      method: GET
+      url: "{{ uritouse }}"
+    register: results
+
+  # ansible doesn't want to print to the screen
+  # but sometimes we just need to see ephemeral data
+  - name: display the results
+    debug:
+      var: results.json.copyright

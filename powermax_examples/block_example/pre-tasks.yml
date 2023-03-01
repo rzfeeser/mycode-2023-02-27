@@ -1,0 +1,14 @@
+- name: Get a list of arrays (serial_no.)
+  dellemc.powermax.info:
+  # dellemc_powermax_gatherfacts:   # old name
+      unispherehost: "{{ dell.unispherehost }}"
+      universion: "{{ dell.universion }}"
+      verifycert: "{{ dell.verifycert }}"
+      user: "{{ dell.user }}"
+      password: "{{ dell.password }}" }
+  register: arrays
+
+- name: Display the data that was just gathered
+  ansible.builtin.debug:
+          var: arrays
+          verbosity: 1
