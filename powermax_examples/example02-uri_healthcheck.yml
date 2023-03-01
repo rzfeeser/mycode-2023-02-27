@@ -1,0 +1,29 @@
+---
+- name: Health Check
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    unispherehost: "Ip of your unisphere"
+    serial_no: "Serial no (array id) of the device to check health on"
+    user: "username"
+    password: "password"
+
+  tasks:
+    - name: Get Health Check
+      ansible.builtin.uri:
+        url: "https://{{ unispherehost }}:8443/univmax/restapi/91/system/symmetrix/{{ serial_no }}/health"
+        validate_certs: false
+        user: "{{ user }}"
+        password: "{{ password }}"
+        headers:
+          Content-Type: "application/json"
+        method: GET
+        body_format: json
+        status_code:
+          - 200
+      register: response
+
+    - debug:
+        var: response

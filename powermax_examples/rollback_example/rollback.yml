@@ -1,0 +1,26 @@
+- name: "REMOVE - masking view {{ storage.mv_name }}"
+  dellemc_powermax_maskingview:
+      unispherehost: "{{ dell.unispherehost }}"
+      universion: "{{ dell.universion }}"
+      verifycert: "{{ dell.verifycert }}"
+      user: "{{ dell.user }}"
+      password: "{{ dell.password }}"
+      serial_no: "{{ arrays.Arrays[0] }}" # maps to an array (avail if you run the module without it)
+      mv_name: "{{ storage.mv_name }}"
+      portgroup_name: "{{ storage.portgroup_name }}"
+      host_name: "{{ storage.host_name }}"
+      sg_name: "{{ storage.sg_name }}"
+      state: absent
+
+- name: "REMOVE - port group {{ storage.portgroup_name }}"
+  dellemc_powermax_portgroup:
+      unispherehost: "{{ dell.unispherehost }}"
+      universion: "{{ dell.universion }}"
+      verifycert: "{{ dell.verifycert }}"
+      user: "{{ dell.user }}"
+      password: "{{ dell.password }}"
+      serial_no: "{{ arrays.Arrays[0] }}" # maps to an array (avail if you run the module without it)
+      portgroup_name: "{{ storage.portgroup_name }}"
+      state: absent
+      ports: "{{ storage.port_list }}"
+      port_state: "absent-in-group"

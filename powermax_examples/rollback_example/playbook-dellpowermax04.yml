@@ -1,0 +1,39 @@
+---
+- name: Gather configuration data
+  hosts: localhost
+  connection: local
+
+  collections:
+    - dellemc.powermax          # ansible-doc dellemc.powermax -l  (l as in list)
+
+  vars_files:
+    - vars/credsvault.yml       # connection info goes here (encrypt this w/ vault)
+    - vars/storagedetails.yml   # ticket details go here (in the clear is prob okay)
+
+  tasks:
+
+  - name: Pretasks
+    block:
+      - name: Get a list of arrays (serial_no.)
+        #dellemc_powermax_gatherfacts:
+        dellemc.powermax.info:
+            unispherehost: "{{ dell.unispherehost }}"
+            universion: "{{ dell.universion }}"
+            verifycert: "{{ dell.verifycert }}"
+            user: "{{ dell.user }}"
+            password: "{{ dell.password }}"
+        register: arrays
+                
+      - name: Display the data that was just gathered
+        debug:
+                var: arrays
+                verbosity: 1
+
+  - name: Change operations
+    block:
+      - name: SG to MV
+        ansible.builtin.include_tasks: change-operations.yml
+      
+    rescue:
+      - name: Undo everything if it goes wrong
+        ansible.builtin.include_tasks: rollback.yml
